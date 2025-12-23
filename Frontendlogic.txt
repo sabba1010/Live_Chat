@@ -1,0 +1,34 @@
+////Filtering Logic
+
+const fetchSellerOrders = async (currentUserEmail) => {
+  try {
+    // ১. সব ডাটা নিয়ে আসা
+    const res = await axios.get("YOUR_API_URL/purchase/getall");
+    const allData = res.data;
+
+    // ২. লজিক: শুধুমাত্র আমার সেল করা প্রোডাক্ট ফিল্টার করা
+    const mySales = allData.filter((order) => order.sellerEmail === currentUserEmail);
+
+    return mySales; // এটি স্টেটে সেট করবেন
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+
+/////////Chat Separation
+// মেসেজ পাঠানোর সময়
+const sendMessage = async () => {
+  await axios.post("CHAT_API/send", {
+    senderId: "seller@mail.com",
+    receiverId: "buyer@mail.com",
+    message: "Hello!",
+    orderId: "ORDER_12345" // লজিক: এই আইডির কারণে চ্যাট আলাদা থাকবে
+  });
+};
+
+// মেসেজ আনার সময় (Query Parameter হিসেবে)
+const getMessages = async () => {
+  await axios.get(`CHAT_API/history/seller/buyer?orderId=ORDER_12345`);
+};
